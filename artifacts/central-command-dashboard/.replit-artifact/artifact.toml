@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Central Command Dashboard"
+description = "An operational command dashboard for monitoring systems, running the build pipeline, reviewing telemetry, and dispatching alerts across Telegram and Discord."
+version = "1.0.0"
+id = "artifacts/central-command-dashboard"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25364
+
+[services.development]
+run = "pnpm --filter @workspace/central-command-dashboard run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/central-command-dashboard", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/central-command-dashboard/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25364"
+BASE_PATH = "/"

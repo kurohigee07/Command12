@@ -10,6 +10,18 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: dashboard
+    description: Central command dashboard operations
+  - name: telemetry
+    description: Worker telemetry ingestion
+  - name: integrations
+    description: External integration actions
+  - name: pipeline
+    description: Operational pipeline controls
+  - name: api-tester
+    description: Server-side HTTP request testing
+  - name: scraper
+    description: Media extraction integrations
 paths:
   /healthz:
     get:
@@ -24,6 +36,255 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /api-tester/execute:
+    post:
+      operationId: executeApiTesterRequest
+      tags: [api-tester]
+      summary: Execute an HTTP request
+      description: Executes a validated HTTP request from the API server and returns the upstream response.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApiTesterInput"
+      responses:
+        "200":
+          description: Upstream response received
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiTesterResponse"
+        "400":
+          description: Invalid request input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "413":
+          description: Upstream response exceeded the size limit
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: Upstream request failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /scraper/extract:
+    post:
+      operationId: extractMedia
+      tags: [scraper]
+      summary: Extract media from a supported social URL
+      description: Validates a social media URL and forwards it to a configured media extraction provider when one is available.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MediaExtractInput"
+      responses:
+        "202":
+          description: Extraction request accepted by the configured provider
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaExtractResponse"
+        "400":
+          description: Invalid or unsupported URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "501":
+          description: No media extraction provider is configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /systems:
+    get:
+      operationId: listSystems
+      tags: [dashboard]
+      summary: List monitored systems
+      description: Returns monitored systems with status derived from the last ping time.
+      responses:
+        "200":
+          description: Monitored systems
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/System"
+  /system-logs:
+    get:
+      operationId: listSystemLogs
+      tags: [dashboard]
+      summary: List recent system logs
+      description: Returns the latest telemetry activity, newest first.
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: number
+            minimum: 1
+            maximum: 100
+            default: 30
+        - name: system_name
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Recent system logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SystemLog"
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get dashboard summary
+      description: Returns system counts, recent event volume, and the latest event.
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+  /telemetry:
+    post:
+      operationId: ingestTelemetry
+      tags: [telemetry]
+      summary: Ingest worker telemetry
+      description: Validates and records a telemetry event, then updates the related system.
+      parameters:
+        - name: X-API-KEY
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TelemetryInput"
+      responses:
+        "200":
+          description: Telemetry accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TelemetryResponse"
+        "400":
+          description: Invalid telemetry body
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Invalid telemetry API key
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /telegram/send:
+    post:
+      operationId: sendTelegramMessage
+      tags: [integrations]
+      summary: Send a Telegram alert
+      description: Sends a prioritized alert through the configured Telegram bot and records the delivery event.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TelegramSendInput"
+      responses:
+        "200":
+          description: Telegram alert delivered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TelegramSendResponse"
+        "400":
+          description: Invalid Telegram alert
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Telegram integration is not configured or unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /notifications/status:
+    get:
+      operationId: getNotificationStatus
+      tags: [integrations]
+      summary: Get notification channel status
+      description: Returns configured notification channels without exposing credentials.
+      responses:
+        "200":
+          description: Notification status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationStatus"
+  /pipeline/trigger:
+    post:
+      operationId: triggerPipeline
+      tags: [pipeline]
+      summary: Trigger the daily pipeline
+      description: Starts the shared Scout, Council, and Dispatch runner when the pipeline is configured.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PipelineTriggerInput"
+      responses:
+        "202":
+          description: Pipeline accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PipelineTriggerResponse"
+        "401":
+          description: Trigger authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Another pipeline run is in progress
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Manual trigger rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Pipeline is not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +294,239 @@ components:
           type: string
       required:
         - status
+    System:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+          enum: [online, warning, offline]
+        derived_status:
+          type: string
+          enum: [online, warning, offline]
+        last_ping:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+          additionalProperties: true
+        created_at:
+          type: string
+          format: date-time
+      required: [id, name, status, derived_status, last_ping, metadata, created_at]
+    SystemLog:
+      type: object
+      properties:
+        id:
+          type: string
+        system_name:
+          type: string
+        event_type:
+          type: string
+        message:
+          type: [string, "null"]
+        payload:
+          type: object
+          additionalProperties: true
+        created_at:
+          type: string
+          format: date-time
+      required: [id, system_name, event_type, message, payload, created_at]
+    DashboardSummary:
+      type: object
+      properties:
+        total_systems:
+          type: number
+        online_systems:
+          type: number
+        warning_systems:
+          type: number
+        offline_systems:
+          type: number
+        events_last_24h:
+          type: number
+        latest_event:
+          anyOf:
+            - $ref: "#/components/schemas/SystemLog"
+            - type: "null"
+      required:
+        - total_systems
+        - online_systems
+        - warning_systems
+        - offline_systems
+        - events_last_24h
+        - latest_event
+    TelemetryInput:
+      type: object
+      properties:
+        system_name:
+          type: string
+          minLength: 1
+        status:
+          type: string
+          enum: [online, warning, offline]
+        event_type:
+          type: string
+          minLength: 1
+        message:
+          type: string
+        payload:
+          type: object
+          additionalProperties: true
+      required: [system_name, status, event_type]
+    TelemetryResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        system:
+          $ref: "#/components/schemas/System"
+        log:
+          $ref: "#/components/schemas/SystemLog"
+      required: [success, system, log]
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+      required: [error]
+    TelegramSendInput:
+      type: object
+      properties:
+        message:
+          type: string
+          minLength: 1
+          maxLength: 4096
+        priority:
+          type: string
+          enum: [normal, urgent]
+          default: normal
+        channels:
+          type: array
+          items:
+            type: string
+            enum: [telegram, discord]
+          minItems: 1
+          uniqueItems: true
+          default: [telegram]
+      required: [message]
+    TelegramSendResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        priority:
+          type: string
+          enum: [normal, urgent]
+        telegram_message_id:
+          type: [number, "null"]
+        discord_delivered:
+          type: boolean
+        log_id:
+          type: string
+      required: [success, message, priority, telegram_message_id, discord_delivered, log_id]
+    NotificationStatus:
+      type: object
+      properties:
+        telegram_configured:
+          type: boolean
+        discord_configured:
+          type: boolean
+      required: [telegram_configured, discord_configured]
+    PipelineTriggerInput:
+      type: object
+      properties:
+        source:
+          type: string
+          enum: [dashboard, cron]
+          default: dashboard
+    PipelineTriggerResponse:
+      type: object
+      properties:
+        accepted:
+          type: boolean
+        run_id:
+          type: string
+        status:
+          type: string
+          enum: [queued, running]
+        message:
+          type: string
+        log_id:
+          type: string
+      required: [accepted, run_id, status, message, log_id]
+    ApiTesterInput:
+      type: object
+      properties:
+        url:
+          type: string
+          maxLength: 4096
+        method:
+          type: string
+          enum: [GET, POST, PUT, PATCH, DELETE]
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+          default: {}
+        body:
+          type: ["string", "null"]
+      required: [url, method]
+    ApiTesterResponse:
+      type: object
+      properties:
+        request:
+          type: object
+          properties:
+            url:
+              type: string
+            method:
+              type: string
+          required: [url, method]
+        status:
+          type: number
+        status_text:
+          type: string
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+        body:
+          {}
+        body_text:
+          type: string
+        elapsed_ms:
+          type: number
+      required: [request, status, status_text, headers, body, body_text, elapsed_ms]
+    MediaExtractInput:
+      type: object
+      properties:
+        url:
+          type: string
+          maxLength: 4096
+      required: [url]
+    MediaExtractResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [accepted]
+        message:
+          type: string
+        url:
+          type: string
+        platform:
+          type: string
+          enum: [tiktok, instagram, reddit, x]
+        job_id:
+          type: ["string", "null"]
+      required: [status, message, url, platform, job_id]
 

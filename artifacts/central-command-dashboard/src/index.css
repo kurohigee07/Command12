@@ -1,0 +1,650 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Geist:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-border: hsl(var(--card-border));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover-border: hsl(var(--popover-border));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-border: var(--primary-border);
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary-border: var(--secondary-border);
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-muted-border: var(--muted-border);
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent-border: var(--accent-border);
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive-border: var(--destructive-border);
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-primary-border: var(--sidebar-primary-border);
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-accent-border: var(--sidebar-accent-border);
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --font-sans: var(--app-font-sans);
+  --font-serif: var(--app-font-serif);
+  --font-mono: var(--app-font-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* LIGHT MODE */
+:root {
+  --button-outline: rgba(0, 0, 0, 0.1);
+  --badge-outline: rgba(0, 0, 0, 0.05);
+
+  /* Automatic computation of border around primary / danger buttons */
+  --opaque-button-border-intensity: -8; /* In terms of percentages */
+
+  /* Backgrounds applied on top of other backgrounds when hovered/active */
+  --elevate-1: rgba(0, 0, 0, 0.03);
+  --elevate-2: rgba(0, 0, 0, 0.08);
+
+  --background: 240 7% 7%;
+
+  --foreground: 240 8% 92%;
+
+  --border: 240 6% 18%;
+
+  --card: 240 7% 10%;
+
+  --card-foreground: 240 8% 92%;
+
+  --card-border: 240 6% 17%;
+
+  --sidebar: 240 8% 5%;
+
+  --sidebar-foreground: 240 7% 74%;
+
+  --sidebar-border: 240 6% 14%;
+
+  --sidebar-primary: 158 72% 49%;
+
+  --sidebar-primary-foreground: 240 8% 5%;
+
+  --sidebar-accent: 240 7% 12%;
+
+  --sidebar-accent-foreground: 240 8% 92%;
+
+  --sidebar-ring: 158 72% 49%;
+
+  --popover: 240 7% 11%;
+
+  --popover-foreground: 240 8% 92%;
+
+  --popover-border: 240 6% 20%;
+
+  --primary: 158 72% 49%;
+
+  --primary-foreground: 240 8% 5%;
+
+  --secondary: 240 6% 16%;
+
+  --secondary-foreground: 240 7% 82%;
+
+  --muted: 240 6% 14%;
+
+  --muted-foreground: 240 6% 57%;
+
+  --accent: 38 92% 58%;
+
+  --accent-foreground: 240 8% 5%;
+
+  --destructive: 3 77% 60%;
+
+  --destructive-foreground: 240 8% 96%;
+
+  --input: 240 6% 22%;
+  --ring: 158 72% 49%;
+  --chart-1: 158 72% 49%;
+  --chart-2: 38 92% 58%;
+  --chart-3: 3 77% 60%;
+  --chart-4: 193 80% 55%;
+  --chart-5: 280 65% 65%;
+
+  --app-font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --app-font-serif: Georgia, serif;
+  --app-font-mono: 'DM Mono', ui-monospace, SFMono-Regular, monospace;
+  --radius: 0.5rem; /* 8px */
+  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0); /*replace with H S L */
+  --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0); /*replace with H S L */
+  --shadow-sm:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-md:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-lg:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-xl:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  /* Automatically computed borders - intensity can be controlled by the user by the --opaque-button-border-intensity setting */
+
+  /* Fallback for older browsers */
+  --sidebar-primary-border: hsl(var(--sidebar-primary));
+  --sidebar-primary-border: hsl(
+    from hsl(var(--sidebar-primary)) h s
+      calc(l + var(--opaque-button-border-intensity)) / alpha
+  );
+
+  /* Fallback for older browsers */
+  --sidebar-accent-border: hsl(var(--sidebar-accent));
+  --sidebar-accent-border: hsl(
+    from hsl(var(--sidebar-accent)) h s
+      calc(l + var(--opaque-button-border-intensity)) / alpha
+  );
+
+  /* Fallback for older browsers */
+  --primary-border: hsl(var(--primary));
+  --primary-border: hsl(
+    from hsl(var(--primary)) h s
+      calc(l + var(--opaque-button-border-intensity)) / alpha
+  );
+
+  /* Fallback for older browsers */
+  --secondary-border: hsl(var(--secondary));
+  --secondary-border: hsl(
+    from hsl(var(--secondary)) h s
+      calc(l + var(--opaque-button-border-intensity)) / alpha
+  );
+
+  /* Fallback for older browsers */
+  --muted-border: hsl(var(--muted));
+  --muted-border: hsl(
+    from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) /
+      alpha
+  );
+
+  /* Fallback for older browsers */
+  --accent-border: hsl(var(--accent));
+  --accent-border: hsl(
+    from hsl(var(--accent)) h s
+      calc(l + var(--opaque-button-border-intensity)) / alpha
+  );
+
+  /* Fallback for older browsers */
+  --destructive-border: hsl(var(--destructive));
+  --destructive-border: hsl(
+    from hsl(var(--destructive)) h s
+      calc(l + var(--opaque-button-border-intensity)) / alpha
+  );
+}
+
+.dark {
+  --button-outline: rgba(255, 255, 255, 0.1);
+  --badge-outline: rgba(255, 255, 255, 0.05);
+
+  --opaque-button-border-intensity: 9; /* In terms of percentages */
+
+  /* Backgrounds applied on top of other backgrounds when hovered/active */
+  --elevate-1: rgba(255, 255, 255, 0.04);
+  --elevate-2: rgba(255, 255, 255, 0.09);
+
+  --background: 240 7% 7%;
+
+  --foreground: 240 8% 92%;
+
+  --border: 240 6% 18%;
+
+  --card: 240 7% 10%;
+
+  --card-foreground: 240 8% 92%;
+
+  --card-border: 240 6% 17%;
+
+  --sidebar: 240 8% 5%;
+
+  --sidebar-foreground: 240 7% 74%;
+
+  --sidebar-border: 240 6% 14%;
+
+  --sidebar-primary: 158 72% 49%;
+
+  --sidebar-primary-foreground: 240 8% 5%;
+
+  --sidebar-accent: 240 7% 12%;
+
+  --sidebar-accent-foreground: 240 8% 92%;
+
+  --sidebar-ring: 158 72% 49%;
+
+  --popover: 240 7% 11%;
+
+  --popover-foreground: 240 8% 92%;
+
+  --popover-border: 240 6% 20%;
+
+  --primary: 158 72% 49%;
+
+  --primary-foreground: 240 8% 5%;
+
+  --secondary: 240 6% 16%;
+
+  --secondary-foreground: 240 7% 82%;
+
+  --muted: 240 6% 14%;
+
+  --muted-foreground: 240 6% 57%;
+
+  --accent: 38 92% 58%;
+
+  --accent-foreground: 240 8% 5%;
+
+  --destructive: 3 77% 60%;
+
+  --destructive-foreground: 240 8% 96%;
+
+  /* Used as the border around inputs. Dark mode: Should be a border that is light enough to have high contrast when rendered on a --card background. More contrast than standard --border */
+  --input: 240 6% 22%;
+  --ring: 158 72% 49%;
+  --chart-1: 158 72% 49%;
+  --chart-2: 38 92% 58%;
+  --chart-3: 3 77% 60%;
+  --chart-4: 193 80% 55%;
+  --chart-5: 280 65% 65%;
+
+  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-sm:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-md:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-lg:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-xl:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    min-width: 320px;
+    background-image: linear-gradient(120deg, rgba(30, 31, 38, 0.22), transparent 38%);
+  }
+}
+
+@layer utilities {
+  .font-mono-data {
+    font-family: var(--app-font-mono);
+    letter-spacing: -0.02em;
+  }
+
+  .cc-grid {
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .cc-panel {
+    background: linear-gradient(145deg, rgba(34,35,43,0.88), rgba(22,23,29,0.96));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.035), 0 18px 38px rgba(0,0,0,0.12);
+  }
+
+  .cc-scanline {
+    position: relative;
+  }
+
+  .cc-scanline::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.028;
+    background: repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(255,255,255,0.5) 4px);
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex: 0 0 auto;
+  }
+
+  .status-dot-online { background: hsl(158 72% 49%); box-shadow: 0 0 0 3px hsl(158 72% 49% / 0.12); }
+  .status-dot-warning { background: hsl(38 92% 58%); box-shadow: 0 0 0 3px hsl(38 92% 58% / 0.12); }
+  .status-dot-offline { background: hsl(3 77% 60%); box-shadow: 0 0 0 3px hsl(3 77% 60% / 0.12); }
+
+  .status-text-online { color: hsl(158 72% 60%); }
+  .status-text-warning { color: hsl(38 92% 66%); }
+  .status-text-offline { color: hsl(3 77% 68%); }
+
+  .skeleton {
+    background: linear-gradient(90deg, rgba(255,255,255,0.045), rgba(255,255,255,0.09), rgba(255,255,255,0.045));
+    background-size: 220% 100%;
+    animation: cc-shimmer 1.5s ease-in-out infinite;
+  }
+
+  @keyframes cc-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -20% 0; }
+  }
+
+  @keyframes cc-rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-rise { animation: cc-rise 420ms cubic-bezier(.2,.7,.2,1) both; }
+  .animate-rise-delay-1 { animation-delay: 70ms; }
+  .animate-rise-delay-2 { animation-delay: 140ms; }
+  .animate-rise-delay-3 { animation-delay: 210ms; }
+}
+
+/**
+ * Using the elevate system.
+ * Automatic contrast adjustment.
+ *
+ * <element className="hover-elevate" />
+ * <element className="active-elevate-2" />
+ *
+ * // Using the tailwind utility when a data attribute is "on"
+ * <element className="toggle-elevate data-[state=on]:toggle-elevated" />
+ * // Or manually controlling the toggle state
+ * <element className="toggle-elevate toggle-elevated" />
+ *
+ * Elevation systems have to handle many states.
+ * - not-hovered, vs. hovered vs. active  (three mutually exclusive states)
+ * - toggled or not
+ * - focused or not (this is not handled with these utilities)
+ *
+ * Even without handling focused or not, this is six possible combinations that
+ * need to be distinguished from eachother visually.
+ */
+@layer utilities {
+  /* Hide ugly search cancel button in Chrome until we can style it properly */
+  input[type='search']::-webkit-search-cancel-button {
+    @apply hidden;
+  }
+
+  /* Placeholder styling for contentEditable div */
+  [contenteditable][data-placeholder]:empty::before {
+    content: attr(data-placeholder);
+    color: hsl(var(--muted-foreground));
+    pointer-events: none;
+  }
+
+  /* .no-default-hover-elevate/no-default-active-elevate is an escape hatch so consumers of
+   * buttons/badges can remove the automatic brightness adjustment on interactions
+   * and program their own. */
+  .no-default-hover-elevate {
+  }
+
+  .no-default-active-elevate {
+  }
+
+  /**
+   * Toggleable backgrounds go behind the content. Hoverable/active goes on top.
+   * This way they can stack/compound. Both will overlap the parent's borders!
+   * So borders will be automatically adjusted both on toggle, and hover/active,
+   * and they will be compounded.
+   */
+  .toggle-elevate::before,
+  .toggle-elevate-2::before {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    /*border-radius: inherit;   match rounded corners */
+    border-radius: inherit;
+    z-index: -1;
+    /* sits behind content but above backdrop */
+  }
+
+  .toggle-elevate.toggle-elevated::before {
+    background-color: var(--elevate-2);
+  }
+
+  /* If there's a 1px border, adjust the inset so that it covers that parent's border */
+  .border.toggle-elevate::before {
+    inset: -1px;
+  }
+
+  /* Does not work on elements with overflow:hidden! */
+  .hover-elevate:not(.no-default-hover-elevate),
+  .active-elevate:not(.no-default-active-elevate),
+  .hover-elevate-2:not(.no-default-hover-elevate),
+  .active-elevate-2:not(.no-default-active-elevate) {
+    position: relative;
+    z-index: 0;
+  }
+
+  .hover-elevate:not(.no-default-hover-elevate)::after,
+  .active-elevate:not(.no-default-active-elevate)::after,
+  .hover-elevate-2:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:not(.no-default-active-elevate)::after {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    /*border-radius: inherit;   match rounded corners */
+    border-radius: inherit;
+    z-index: 999;
+    /* sits in front of content */
+  }
+
+  .hover-elevate:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-1);
+  }
+
+  .hover-elevate-2:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-2);
+  }
+
+  /* If there's a 1px border, adjust the inset so that it covers that parent's border */
+  .border.hover-elevate:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate:not(.no-active-interaction-elevate)::after,
+  .border.hover-elevate-2:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate-2:not(.no-active-interaction-elevate)::after,
+  .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
+    inset: -1px;
+  }
+}
+
+/* Targeted command-surface structure. These classes preserve the existing
+   palette while giving dense workspaces a clearer reading order. */
+.telemetry-overview {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.72fr) minmax(0, 1.28fr);
+  overflow: hidden;
+  border: 1px solid hsl(var(--card-border));
+  border-radius: 0.75rem;
+  background: hsl(var(--card) / 0.72);
+}
+
+.telemetry-lead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.25rem;
+  border-right: 1px solid hsl(var(--border));
+}
+
+.telemetry-lead-meta {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding-top: 0.2rem;
+}
+
+.telemetry-status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.telemetry-status-cell {
+  min-width: 0;
+  padding: 1.25rem;
+  transition: background-color 180ms ease;
+}
+
+.telemetry-status-cell + .telemetry-status-cell {
+  border-left: 1px solid hsl(var(--border));
+}
+
+.telemetry-status-cell:hover {
+  background: hsl(var(--muted) / 0.2);
+}
+
+.telemetry-rail {
+  display: flex;
+  gap: 2px;
+  min-height: 0.7rem;
+  overflow: hidden;
+  border: 1px solid hsl(var(--border));
+  border-radius: 999px;
+  background: hsl(var(--muted) / 0.45);
+}
+
+.telemetry-rail-segment {
+  min-width: 0.35rem;
+  transition: flex-basis 350ms ease;
+}
+
+.telemetry-rail-online { background: hsl(158 72% 49%); }
+.telemetry-rail-warning { background: hsl(38 92% 58%); }
+.telemetry-rail-offline { background: hsl(3 77% 60%); }
+
+.telemetry-rail-empty {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  color: hsl(var(--muted-foreground));
+  font-family: var(--app-font-mono);
+  font-size: 10px;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.api-workspace-header {
+  background: hsl(var(--card) / 0.25);
+}
+
+.api-tool-panel {
+  border-radius: 0.65rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+.api-tool-panel form > button[type='submit'] {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.api-context {
+  border-left: 2px solid hsl(var(--primary) / 0.55);
+}
+
+.api-result {
+  animation: cc-rise 260ms cubic-bezier(.2, .7, .2, 1) both;
+}
+
+.council-stages {
+  position: relative;
+}
+
+.council-stage {
+  position: relative;
+}
+
+.council-stage:not(:last-child)::after {
+  position: absolute;
+  top: 1.2rem;
+  right: -0.45rem;
+  width: 0.8rem;
+  height: 1px;
+  content: '';
+  background: hsl(var(--border));
+}
+
+.council-console {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.briefing-item {
+  border-left-width: 2px;
+}
+
+.briefing-item:hover {
+  border-left-color: hsl(var(--primary) / 0.65);
+}
+
+@media (max-width: 767px) {
+  .telemetry-overview {
+    display: block;
+  }
+
+  .telemetry-lead {
+    border-right: 0;
+    border-bottom: 1px solid hsl(var(--border));
+  }
+
+  .telemetry-status-cell {
+    padding: 1rem;
+  }
+
+  .council-stage:not(:last-child)::after {
+    display: none;
+  }
+}

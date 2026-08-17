@@ -1,0 +1,1 @@
+- [Imported pipeline archives](imported-pipeline-archives.md) — dashboard snapshots may include a convincing pipeline UI without the real Scout/Council/Dispatch backend stages.
