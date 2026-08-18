@@ -16,7 +16,7 @@ import {
   useTriggerPipeline,
   type SystemLog,
 } from '@workspace/api-client-react';
-import { Panel } from '@/components/command-ui';
+import { Panel, formatRelativeTime } from '@/components/command-ui';
 
 type RunRecord = {
   runId: string;
@@ -43,8 +43,7 @@ export function AiCouncilBuilder() {
   const logs = useListSystemLogs(logParams, {
     query: {
       queryKey: getListSystemLogsQueryKey(logParams),
-      enabled: Boolean(run),
-      refetchInterval: run ? 2500 : false,
+      refetchInterval: run ? 2500 : 10000,
     },
   });
 
@@ -58,6 +57,9 @@ export function AiCouncilBuilder() {
   const feedState = getFeedState(run, runEvents);
   const active = Boolean(run && (feedState === 'waiting' || feedState === 'running'));
   const stageIndex = getStageIndex(runEvents, feedState);
+  const recentRuns = (logs.data ?? [])
+    .filter((log) => log.system_name === 'pipeline' && log.event_type === 'manual_trigger')
+    .slice(0, 3);
 
   const executePipeline = () => {
     if (active || trigger.isPending) return;
@@ -207,6 +209,33 @@ export function AiCouncilBuilder() {
           </button>
         </div>
       </div>
+
+        {!run && recentRuns.length > 0 && (
+          <div className="mx-5 mb-5 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950/50 sm:mx-6">
+            <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-3">
+              <div>
+                <p className="font-mono-data text-[10px] uppercase tracking-[0.15em] text-zinc-500">Run history</p>
+                <p className="mt-1 text-xs text-zinc-300">Recent manual triggers</p>
+              </div>
+              <span className="font-mono-data text-[10px] uppercase tracking-[0.12em] text-zinc-600">Last 3</span>
+            </div>
+            <div className="divide-y divide-zinc-800">
+              {recentRuns.map((event) => {
+                const outcome = typeof event.payload?.outcome === 'string' ? event.payload.outcome : 'recorded';
+                const runId = typeof event.payload?.run_id === 'string' ? event.payload.run_id : 'unknown run';
+                const failed = outcome === 'rate_limited' || outcome === 'already_running';
+                return (
+                  <div key={event.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
+                    <span className={`h-1.5 w-1.5 rounded-full ${failed ? 'bg-accent' : 'bg-primary'}`} />
+                    <span className="min-w-0 flex-1 truncate font-mono-data text-[10px] text-zinc-300">{runId}</span>
+                    <span className={`font-mono-data text-[10px] uppercase tracking-[0.1em] ${failed ? 'text-accent' : 'text-primary'}`}>{outcome}</span>
+                    <span className="font-mono-data text-[10px] text-zinc-600">{formatRelativeTime(event.created_at)}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
     </Panel>
   );
 }

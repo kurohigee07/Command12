@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { Activity, ArrowUpRight, BarChart3, Clock3, RadioTower, Server, TriangleAlert, WifiOff } from 'lucide-react';
+import { Activity, ArrowUpRight, BarChart3, CheckCircle2, Clock3, RadioTower, Server, TriangleAlert, WifiOff } from 'lucide-react';
 import { useGetDashboardSummary, useListSystemLogs, useListSystems } from '@workspace/api-client-react';
 import { ChevronLink, EmptyState, ErrorState, formatRelativeTime, formatTimestamp, LoadingRows, Panel, StatusPill } from '@/components/command-ui';
 import { TelegramWidget } from '@/components/widgets/TelegramWidget';
@@ -49,6 +49,28 @@ export function TelemetryHealthTab() {
                <MetricCard label="Offline" value={data?.offline_systems ?? 0} detail="no recent event" icon={<WifiOff className="h-4 w-4" />} accent="offline" />
             </div>
           </section>
+
+          {systemRows.length === 0 && (
+            <section className="mt-6 flex flex-col gap-4 rounded-xl border border-dashed border-primary/25 bg-primary/[0.04] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6" aria-label="Telemetry setup">
+              <div className="flex items-start gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
+                  <CheckCircle2 className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="font-mono-data text-[10px] uppercase tracking-[0.2em] text-primary">Setup path</p>
+                  <h2 className="mt-1 text-base font-semibold text-foreground">Your console is ready for its first signal</h2>
+                  <p className="mt-1 max-w-2xl text-xs leading-5 text-muted-foreground">
+                    Send a heartbeat from the top bar to register a node. Then use Build Pipeline to start a run and Dispatch to notify your team.
+                  </p>
+                </div>
+              </div>
+              <div className="flex shrink-0 flex-wrap gap-2 font-mono-data text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                <span className="rounded-md border border-border bg-secondary px-2.5 py-1.5">1 / heartbeat</span>
+                <span className="rounded-md border border-border bg-secondary px-2.5 py-1.5">2 / pipeline</span>
+                <span className="rounded-md border border-border bg-secondary px-2.5 py-1.5">3 / dispatch</span>
+              </div>
+            </section>
+          )}
 
           <div className="mt-6 grid gap-6 xl:grid-cols-[1.22fr_0.78fr]">
             <Panel className="animate-rise animate-rise-delay-1 overflow-hidden">
